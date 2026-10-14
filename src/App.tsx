@@ -9,9 +9,18 @@ import "./App.css";
 
 const STAGES: LimitStage[] = ["starting", "exercise", "partial", "full"];
 
+type TrackingRole = "left_angle" | "right_angle" | "bilateral_angle";
+
+const TRACKING_ROLES: { key: TrackingRole; label: string }[] = [
+  { key: "left_angle", label: "Left" },
+  { key: "right_angle", label: "Right" },
+  { key: "bilateral_angle", label: "Bilateral" },
+];
+
 function App() {
   const [workout, setWorkout] = useState<WorkoutConfig>(() => createEmptyWorkout());
   const [stage, setStage] = useState<LimitStage>("starting");
+  const [trackingRole, setTrackingRole] = useState<TrackingRole>("bilateral_angle");
   const [selectedAngle, setSelectedAngle] = useState<AngleKey>("angle_3");
   const [catalog, setCatalog] = useState<WorkoutListItem[]>([]);
   const [status, setStatus] = useState<string>("");
@@ -42,9 +51,21 @@ function App() {
     });
   };
 
+  const assignTrackingAngle = (key: AngleKey) => {
+    updateField(trackingRole, key);
+    setSelectedAngle(key);
+  };
+
+  const handleSelectAngle = (key: AngleKey) => {
+    setSelectedAngle(key);
+    // Skeleton / list clicks also assign the active Left/Right/Bilateral role
+    updateField(trackingRole, key);
+  };
+
   const handleNew = () => {
     setWorkout(createEmptyWorkout());
     setStage("starting");
+    setTrackingRole("bilateral_angle");
     setSelectedAngle("angle_3");
     setStatus("New exercise draft");
   };
@@ -61,6 +82,7 @@ function App() {
     try {
       const loaded = await loadWorkout(slug);
       setWorkout(loaded);
+      setTrackingRole("bilateral_angle");
       setSelectedAngle(loaded.bilateral_angle);
       setStatus(`Loaded ${loaded.name}`);
     } catch (err) {
@@ -114,9 +136,11 @@ function App() {
             workout={workout}
             stage={stage}
             selectedAngle={selectedAngle}
-            onSelectAngle={setSelectedAngle}
+            onSelectAngle={handleSelectAngle}
           />
-          <p className="hint">Click an angle label on the skeleton to select it.</p>
+          <p className="hint">
+            Click a skeleton label to assign it to the active tracking tab ({TRACKING_ROLES.find((r) => r.key === trackingRole)?.label}).
+          </p>
         </section>
 
         <section className="panel form-panel">
@@ -150,52 +174,6 @@ function App() {
             </label>
 
             <label>
-              Left angle
-              <select
-                value={workout.left_angle}
-                onChange={(e) => updateField("left_angle", e.target.value as AngleKey)}
-              >
-                {ANGLE_META.map((m) => (
-                  <option key={m.key} value={m.key}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              Right angle
-              <select
-                value={workout.right_angle}
-                onChange={(e) => updateField("right_angle", e.target.value as AngleKey)}
-              >
-                {ANGLE_META.map((m) => (
-                  <option key={m.key} value={m.key}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
-              Bilateral angle
-              <select
-                value={workout.bilateral_angle}
-                onChange={(e) => {
-                  const key = e.target.value as AngleKey;
-                  updateField("bilateral_angle", key);
-                  setSelectedAngle(key);
-                }}
-              >
-                {ANGLE_META.map((m) => (
-                  <option key={m.key} value={m.key}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label>
               Stage down {workout.stage_down_angle}°
               <input
                 type="range"
@@ -218,6 +196,43 @@ function App() {
             </label>
           </div>
 
+          <h2 className="section-title">Rep tracking angles</h2>
+          <div className="stage-tabs">
+            {TRACKING_ROLES.map((role) => (
+              <button
+                key={role.key}
+                type="button"
+                className={role.key === trackingRole ? "tab active" : "tab"}
+                onClick={() => {
+                  setTrackingRole(role.key);
+                  setSelectedAngle(workout[role.key]);
+                }}
+              >
+                {role.label}
+              </button>
+            ))}
+          </div>
+          <p className="cluster-summary">
+            {TRACKING_ROLES.find((r) => r.key === trackingRole)?.label}:{" "}
+            {ANGLE_META.find((m) => m.key === workout[trackingRole])?.label ?? workout[trackingRole]}
+          </p>
+          <div className="tracking-pick-list">
+            {ANGLE_META.map((meta) => {
+              const assigned = workout[trackingRole] === meta.key;
+              return (
+                <button
+                  key={meta.key}
+                  type="button"
+                  className={assigned ? "pick-row selected" : "pick-row"}
+                  onClick={() => assignTrackingAngle(meta.key)}
+                >
+                  {meta.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <h2 className="section-title">Position limits</h2>
           <div className="stage-tabs">
             {STAGES.map((s) => (
               <button
