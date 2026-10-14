@@ -46,9 +46,7 @@ export function LimitEditor({
                   }}
                   onClick={(e) => e.stopPropagation()}
                 />
-                <span>
-                  {meta.key} — {meta.label}
-                </span>
+                <span>{meta.label}</span>
               </label>
             </div>
             {enabled && (

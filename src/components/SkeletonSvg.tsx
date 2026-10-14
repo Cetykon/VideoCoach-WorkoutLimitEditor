@@ -1,21 +1,5 @@
-import { ANGLE_META } from "../lib/angles";
+import { ANGLE_META, type JointId } from "../lib/angles";
 import type { AngleKey, LimitPair, LimitStage, WorkoutConfig } from "../types/workout";
-
-type JointId =
-  | "head"
-  | "neck"
-  | "leftShoulder"
-  | "rightShoulder"
-  | "leftElbow"
-  | "rightElbow"
-  | "leftWrist"
-  | "rightWrist"
-  | "leftHip"
-  | "rightHip"
-  | "leftKnee"
-  | "rightKnee"
-  | "leftAnkle"
-  | "rightAnkle";
 
 type Point = { x: number; y: number };
 
@@ -66,7 +50,7 @@ function rotateAround(origin: Point, point: Point, degrees: number): Point {
   };
 }
 
-/** Nudge limbs using midpoint of stretch/contract for the selected bilateral-ish angles. */
+/** Nudge limbs using midpoint of stretch/contract for the selected angle. */
 function poseFromLimits(
   workout: WorkoutConfig,
   stage: LimitStage,
@@ -77,9 +61,7 @@ function poseFromLimits(
   const enabled = !(pair[0] === 0 && pair[1] === 0);
   const mid = enabled ? (pair[0] + pair[1]) / 2 : 90;
 
-  // Map a few common angles to visible pose changes
   if (selectedAngle === "angle_3" || selectedAngle === "angle_4") {
-    // Elbow bend: smaller angle => more bent
     const bend = 180 - mid;
     if (selectedAngle === "angle_3") {
       joints.rightWrist = rotateAround(joints.rightElbow, joints.rightWrist, -bend * 0.6);
@@ -87,7 +69,6 @@ function poseFromLimits(
       joints.leftWrist = rotateAround(joints.leftElbow, joints.leftWrist, bend * 0.6);
     }
   } else if (selectedAngle === "angle_5" || selectedAngle === "angle_6") {
-    // Armpit: raise arm as angle grows (approx)
     const raise = mid - 30;
     if (selectedAngle === "angle_5") {
       joints.rightElbow = rotateAround(joints.rightShoulder, joints.rightElbow, -raise * 0.5);
@@ -146,17 +127,19 @@ export function SkeletonSvg({ workout, stage, selectedAngle, onSelectAngle }: Sk
         />
       ))}
       {ANGLE_META.map((meta) => {
-        const anchor = meta.joints[1] as JointId;
-        const p = joints[anchor];
+        const p = joints[meta.vertex];
+        const ox = meta.labelOffset?.x ?? (meta.labelLeft ? -10 : 10);
+        const oy = meta.labelOffset?.y ?? -10;
         return (
           <text
             key={meta.key}
-            x={p.x + (meta.key.includes("left") || meta.key.endsWith("_2") || meta.key.endsWith("_4") || meta.key.endsWith("_6") || meta.key.endsWith("_8") || meta.key.endsWith("_10") || meta.key.endsWith("_12") ? -28 : 10)}
-            y={p.y - 10}
+            x={p.x + ox}
+            y={p.y + oy}
+            textAnchor={meta.labelLeft ? "end" : "start"}
             className={meta.key === selectedAngle ? "angle-label angle-label-active" : "angle-label"}
             onClick={() => onSelectAngle(meta.key)}
           >
-            {meta.key.replace("angle_", "a")}
+            {meta.shortLabel}
           </text>
         );
       })}

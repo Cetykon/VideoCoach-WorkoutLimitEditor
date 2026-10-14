@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { LimitEditor } from "./components/LimitEditor";
 import { SkeletonSvg } from "./components/SkeletonSvg";
-import { ANGLE_KEYS, STAGE_LABELS } from "./lib/angles";
+import { ANGLE_META, STAGE_LABELS } from "./lib/angles";
 import { downloadWorkout, listWorkouts, loadWorkout, saveWorkout } from "./lib/api";
 import { cloneWorkout, createEmptyWorkout } from "./lib/defaults";
 import type { AngleKey, LimitPair, LimitStage, WorkoutConfig, WorkoutListItem } from "./types/workout";
@@ -155,9 +155,9 @@ function App() {
                 value={workout.left_angle}
                 onChange={(e) => updateField("left_angle", e.target.value as AngleKey)}
               >
-                {ANGLE_KEYS.map((k) => (
-                  <option key={k} value={k}>
-                    {k}
+                {ANGLE_META.map((m) => (
+                  <option key={m.key} value={m.key}>
+                    {m.label}
                   </option>
                 ))}
               </select>
@@ -169,9 +169,9 @@ function App() {
                 value={workout.right_angle}
                 onChange={(e) => updateField("right_angle", e.target.value as AngleKey)}
               >
-                {ANGLE_KEYS.map((k) => (
-                  <option key={k} value={k}>
-                    {k}
+                {ANGLE_META.map((m) => (
+                  <option key={m.key} value={m.key}>
+                    {m.label}
                   </option>
                 ))}
               </select>
@@ -187,9 +187,9 @@ function App() {
                   setSelectedAngle(key);
                 }}
               >
-                {ANGLE_KEYS.map((k) => (
-                  <option key={k} value={k}>
-                    {k}
+                {ANGLE_META.map((m) => (
+                  <option key={m.key} value={m.key}>
+                    {m.label}
                   </option>
                 ))}
               </select>
