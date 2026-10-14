@@ -1,0 +1,246 @@
+.app {
+  min-height: 100vh;
+  color: #e8eef5;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, #1a3a4a 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, #2a2418 0%, transparent 50%),
+    #0f1419;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid rgba(232, 238, 245, 0.12);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  color: rgba(232, 238, 245, 0.65);
+  font-size: 0.92rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button {
+  border: 1px solid rgba(232, 238, 245, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: #3d9b7a;
+  border-color: #3d9b7a;
+  color: #041510;
+  font-weight: 600;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #4cb38e;
+}
+
+.status {
+  margin: 0 1.75rem;
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(61, 155, 122, 0.15);
+  border: 1px solid rgba(61, 155, 122, 0.35);
+  font-size: 0.9rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(340px, 1.15fr);
+  gap: 1.25rem;
+  padding: 1.25rem 1.75rem 2rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+  }
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(232, 238, 245, 0.1);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.skeleton-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: sticky;
+  top: 0.75rem;
+  align-self: start;
+}
+
+.skeleton {
+  width: min(100%, 420px);
+  height: auto;
+}
+
+.bone {
+  stroke: rgba(232, 238, 245, 0.45);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.bone-active {
+  stroke: #f0b45a;
+  stroke-width: 8;
+}
+
+.joint {
+  fill: #9eb6c8;
+}
+
+.joint-active {
+  fill: #f0b45a;
+}
+
+.angle-label {
+  fill: rgba(232, 238, 245, 0.55);
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.angle-label-active {
+  fill: #f0b45a;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  color: rgba(232, 238, 245, 0.55);
+  font-size: 0.85rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.field-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: rgba(232, 238, 245, 0.8);
+}
+
+.field-grid label:first-child,
+.field-grid label:nth-child(2) {
+  grid-column: 1 / -1;
+}
+
+input[type="text"],
+select {
+  border: 1px solid rgba(232, 238, 245, 0.18);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.stage-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.tab.active {
+  background: rgba(240, 180, 90, 0.2);
+  border-color: #f0b45a;
+  color: #f0b45a;
+}
+
+.limit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 55vh;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.limit-row {
+  border: 1px solid rgba(232, 238, 245, 0.1);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.limit-row.selected {
+  border-color: rgba(240, 180, 90, 0.55);
+  background: rgba(240, 180, 90, 0.08);
+}
+
+.limit-row-header {
+  font-size: 0.88rem;
+}
+
+.enable {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.sliders {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.sliders label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: rgba(232, 238, 245, 0.75);
+}
